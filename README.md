@@ -75,7 +75,7 @@ Available Words
 - chore
 - stamp
 
-Character Scores:
+Character Weights:
 - Position 1:
   - c: 2
   - s: 3
@@ -98,7 +98,7 @@ Character Scores:
   - p: 1
   - s: 1
 
-Word Scores:
+Word Weights:
 - cares: 2+1+1+1+1 = 6
 - score: 3+1+3+2+3 = 12
 - stole: 3+2+3+1+3 = 12
@@ -106,7 +106,7 @@ Word Scores:
 - stamp: 3+2+1+1+1 = 8
 ```
 
-In this example, both `weight` and `stole` have a weight of `12`. In the event
+In this example, both `score` and `stole` have a weight of `12`. In the event
 of a tie, the word that was weighted first remains the chosen guess.
 
 ## Future Improvements
