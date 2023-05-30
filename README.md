@@ -60,10 +60,10 @@ result: --+e-
 # Logic
 
 This program attempts to find a guess that uses the most common characters in
-every position. It uses a simple count logic to assign an overall score to every
+every position. It uses a simple count logic to assign an overall weight to every
 available word. Each letter in a word is given a value equal to that letter's
-frequency in the same position in every other word in the list. The total score
-is the sum of the five character scores.
+frequency in the same position in every other word in the list. The total weight
+is the sum of the five character weights.
 
 ## Example
 
@@ -106,7 +106,8 @@ Word Scores:
 - stamp: 3+2+1+1+1 = 8
 ```
 
-In this example, both `score` and `stole` have a score of `12`. In the event of a tie, the word that was scored first remains the chosen guess.
+In this example, both `weight` and `stole` have a weight of `12`. In the event
+of a tie, the word that was weighted first remains the chosen guess.
 
 ## Future Improvements
 
@@ -127,4 +128,4 @@ characters in a single guess.
 I made this as a project to learn Go. A lot of it was written from official docs
 and random forum/blog posts on similar problems I was trying to solve. I hope to
 come back to this project occasionally when I want to try a new way to solve
-this type of problem.
+this type of problem or to make structural improvements as I learn Go more.
