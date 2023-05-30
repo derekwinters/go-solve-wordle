@@ -4,9 +4,10 @@ import (
   "bufio"
   "fmt"
   "os"
+  "strings"
 )
 
-func readWordList(path string) []string {
+func readWordList(path string, length int) []string {
   readFile, err := os.Open(path)
 
   if err != nil {
@@ -18,7 +19,9 @@ func readWordList(path string) []string {
   var fileLines []string
 
   for fileScanner.Scan() {
-    fileLines = append(fileLines, fileScanner.Text())
+    if len(fileScanner.Text()) == length {
+      fileLines = append(fileLines, strings.ToLower(fileScanner.Text()))
+    }
   }
 
   readFile.Close()

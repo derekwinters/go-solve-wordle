@@ -16,11 +16,11 @@ type wordScore struct {
 func main() {
   // Load dictionary
   fmt.Println("Loading dictionary...")
-  remainingWords := readWordList("all_words.txt")
+  remainingWords := readWordList("dictionary_wordle_valid.txt", 5)
   fmt.Println("Loaded " + strconv.Itoa(len(remainingWords)) + " words")
 
   // Pick a random word
-  possibleAnswers := readWordList("possible_words.txt")
+  possibleAnswers := readWordList("dictionary_wordle_answers.txt", 5)
   rand.Seed(time.Now().Unix())
   answer := possibleAnswers[rand.Intn(len(possibleAnswers))]
   fmt.Println("Chose answer: " + answer)

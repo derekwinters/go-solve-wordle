@@ -1,7 +1,10 @@
 package main
 
 import (
+  "fmt"
+  "sort"
   "strings"
+  "strconv"
 )
 
 func scoreAllWords(wordList []string ) []wordScore {
@@ -34,6 +37,15 @@ func scoreAllWords(wordList []string ) []wordScore {
     }
     allScores = append(allScores, newWordScore)
   }
+
+  sort.SliceStable(allScores, func(i, j int) bool {
+    return allScores[i].totalScore > allScores[j].totalScore
+  })
+
+  for i := 0; i < 10 && i < len(allScores); i++ {
+    fmt.Println("    Top 10: " + allScores[i].word + " Score: " + strconv.Itoa(allScores[i].totalScore))
+  }
+
 
   return allScores
 }
