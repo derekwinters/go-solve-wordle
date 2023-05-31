@@ -1,10 +1,12 @@
 package main
 
 import (
+  "flag"
   "fmt"
   "strconv"
   "math/rand"
   "time"
+  "os"
 )
 
 type wordScore struct {
@@ -14,16 +16,49 @@ type wordScore struct {
 }
 
 func main() {
+  fmt.Println("--------------------------------------------------------------------------------")
+  fmt.Println("Setup")
+  fmt.Println("--------------------------------------------------------------------------------")
+  flagMode := flag.String("mode", "demo", "Select the mode: demo, play, solve")
+  flagAnswer := flag.String("answer", "", "Select a specific answer for demo mode")
+  flag.Parse()
+
+  mode := *flagMode
+  answer := *flagAnswer
+
+  fmt.Println("  Mode: " + mode)
+
   // Load dictionary
-  fmt.Println("Loading dictionary...")
-  remainingWords := readWordList("dictionary_wordle_valid.txt", 5)
-  fmt.Println("Loaded " + strconv.Itoa(len(remainingWords)) + " words")
+  validWordList := readWordList("dictionary_wordle_valid.txt", 5)
+  remainingWords := validWordList
+  fmt.Println("  Loaded " + strconv.Itoa(len(remainingWords)) + " words from dictionary")
 
   // Pick a random word
   possibleAnswers := readWordList("dictionary_wordle_answers.txt", 5)
   rand.Seed(time.Now().Unix())
-  answer := possibleAnswers[rand.Intn(len(possibleAnswers))]
-  fmt.Println("Chose answer: " + answer)
+
+  if mode == "demo" {
+    if  answer == "" {
+      answer = possibleAnswers[rand.Intn(len(possibleAnswers))]
+    }
+    fmt.Println("  Selected word: " + answer)
+  } else if mode == "play" {
+    answer = possibleAnswers[rand.Intn(len(possibleAnswers))]
+    fmt.Println("  Selected word: *****")
+  } else if mode == "solve" {
+    fmt.Println("  SOLVE feature not yet available.")
+    os.Exit(0)
+  } else {
+    fmt.Println("  Invalid mode: " + mode )
+    os.Exit(1)
+  }
+
+  if (mode == "demo" && answer == "") || mode == "play" {
+    answer = possibleAnswers[rand.Intn(len(possibleAnswers))]
+  }
+  if mode != "play" {
+    fmt.Println("  Chose answer: " + answer)
+  }
 
   // Variables
   var wordScores []wordScore
@@ -39,17 +74,34 @@ func main() {
     fmt.Println("  Words Left: " + strconv.Itoa(len(remainingWords)))
     wordScores = scoreAllWords(remainingWords)
 
-    // Get Best Word
-    // implement sort, this is inefficient
-    nextGuess = getBestWord(wordScores)
-    fmt.Println("  Best Guess: " + nextGuess)
+    if mode == "play" || mode == "solve" {
+      // Get user guess
+      nextGuess = getUserGuess()
 
-    // Make Guess, Get Result
-    result = getGuessResult(nextGuess, answer)
-    fmt.Println("  Result:     " + result)
-    // Exit Loop if Correct
-    if result == nextGuess {
-      break
+      // Show guess score
+      for _, v := range wordScores {
+        if v.word == nextGuess {
+          fmt.Println("  Guess Score: " + strconv.Itoa(v.totalScore))
+          break
+        }
+      }
+    } else if mode == "demo" {
+      // Get Best Word
+      // implement sort, this is inefficient
+      nextGuess = getBestWord(wordScores)
+      fmt.Println("  Best Guess: " + nextGuess)
+    }
+
+    if mode == "solve" {
+
+    } else {
+      // Make Guess, Get Result
+      result = getGuessResult(nextGuess, answer)
+      fmt.Println("  Result:     " + result)
+      // Exit Loop if Correct
+      if result == nextGuess {
+        break
+      }
     }
 
     // Filter remainingWords based on new result information
