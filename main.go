@@ -21,20 +21,24 @@ func main() {
   fmt.Println("--------------------------------------------------------------------------------")
   flagMode := flag.String("mode", "demo", "Select the mode: demo, play, solve")
   flagAnswer := flag.String("answer", "", "Select a specific answer for demo mode")
+  flagGuessDict := flag.String("guess-dictionary", "wordle-valid", "Select guesses from wordle-valid, wordle-answers, scrabble")
+  flagAnswerDict := flag.String("answer-dictionary", "wordle-answers", "Select answers from wordle-valid, wordle-answers, scrabble")
   flag.Parse()
 
   mode := *flagMode
   answer := *flagAnswer
+  guessDict := *flagGuessDict
+  answerDict := *flagAnswerDict
 
   fmt.Println("  Mode: " + mode)
 
   // Load dictionary
-  validWordList := readWordList("dictionary_wordle_valid.txt", 5)
+  validWordList := readWordList("dictionaries/" + guessDict + ".txt", 5)
   remainingWords := validWordList
   fmt.Println("  Loaded " + strconv.Itoa(len(remainingWords)) + " words from dictionary")
 
   // Pick a random word
-  possibleAnswers := readWordList("dictionary_wordle_answers.txt", 5)
+  possibleAnswers := readWordList("dictionaries/" + answerDict + ".txt", 5)
   rand.Seed(time.Now().Unix())
 
   if mode == "demo" {

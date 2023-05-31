@@ -10,7 +10,8 @@ five-letter words to quickly identify the solution.
 Syntax:
 
 ```
-go run .
+go build
+./go-solve-wordle -mode demo
 ```
 
 Randomly selects a word from a list of all Wordle solutions, then uses every
@@ -29,12 +30,13 @@ Provides the best first-guess based on the entire dictionary of words, then
 processes a given result to reduce the possible options, and again find the best
 next guess, until a solution is found.
 
-## Game Mode - FUTURE
+## Game Mode
 
 Syntax:
 
 ```
-
+go build
+./go-solve-wordle -mode play
 ```
 
 Randomly selects a word from a list of all Wordle solutions then allows the user
