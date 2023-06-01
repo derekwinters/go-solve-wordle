@@ -125,6 +125,25 @@ If the highest scoring word uses the same character in multiple positions, the
 program may reduce the weight of this word in attempt to eliminate more
 characters in a single guess.
 
+### Fix Result for Duplicate Characters:
+
+Right now, the result logic doesn't acknowledge the unique cases for multiple
+characters.
+
+Doesn't identify single instance of a character when the guess contains two.
+```
+  word:   cares
+  guess:  stash
+  result: +-++-
+```
+
+Doesn't identify when a single instance of a character has already been used.
+```
+  word:   cares
+  guess:  stars
+  result: +-++s
+```
+
 ### Better Code
 
 I made this as a project to learn Go. A lot of it was written from official docs
