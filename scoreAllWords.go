@@ -1,17 +1,15 @@
 package main
 
 import (
-  "fmt"
   "sort"
   "strings"
-  "strconv"
 )
 
-func scoreAllWords(wordList []string ) []wordScore {
+func scoreAllWords(wordList []string, wordLength int) []wordScore {
   var positionCharacters = [][]string{}
 
   // Get slice of characters in wordList for all five positions
-  for i := 0; i < 5; i++ {
+  for i := 0; i < wordLength; i++ {
     positionCharacters = append(positionCharacters, getPositionCharacters(wordList, i))
   }
 
@@ -28,7 +26,7 @@ func scoreAllWords(wordList []string ) []wordScore {
     }
 
     // Get a score for each position
-    for i := 0; i < 5; i++ {
+    for i := 0; i < wordLength; i++ {
       var characterScore = scoreOneCharacter(string(wordList[wordIndex][i]), positionCharacters[i])
       if strings.Count(wordList[wordIndex], string(wordList[wordIndex][i])) == 1 {
         newWordScore.totalScore +=characterScore
@@ -41,11 +39,6 @@ func scoreAllWords(wordList []string ) []wordScore {
   sort.SliceStable(allScores, func(i, j int) bool {
     return allScores[i].totalScore > allScores[j].totalScore
   })
-
-  for i := 0; i < 10 && i < len(allScores); i++ {
-    fmt.Println("    Top 10: " + allScores[i].word + " Score: " + strconv.Itoa(allScores[i].totalScore))
-  }
-
 
   return allScores
 }

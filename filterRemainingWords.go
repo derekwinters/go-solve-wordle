@@ -4,12 +4,12 @@ import (
   "strings"
 )
 
-func filterRemainingWords(result string, guess string, remainingWords []string) []string {
+func filterRemainingWords(result string, guess string, remainingWords []string, wordLength int) []string {
   var filteredWords = []string{}
 
   for w := 0; w < len(remainingWords); w++ {
     keepWord := true
-    for c := 0; c < 5; c++ {
+    for c := 0; c < wordLength; c++ {
       if string(result[c]) == "-" {
         if strings.Contains(remainingWords[w], string(guess[c])) {
           // - is a character not in the answer at all. Remove words that have that

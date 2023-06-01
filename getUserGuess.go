@@ -6,10 +6,10 @@ import (
   "os"
 )
 
-func getUserGuess() string {
+func getUserGuess(wordLength int) string {
   var guess string = ""
 
-  for len(guess) != 5 {
+  for len(guess) != wordLength {
 
     scanner := bufio.NewScanner(os.Stdin)
     fmt.Print("  Enter guess: ")

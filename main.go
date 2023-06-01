@@ -3,6 +3,7 @@ package main
 import (
   "flag"
   "fmt"
+  "regexp"
   "strconv"
   "math/rand"
   "time"
@@ -23,22 +24,30 @@ func main() {
   flagAnswer := flag.String("answer", "", "Select a specific answer for demo mode")
   flagGuessDict := flag.String("guess-dictionary", "wordle-valid", "Select guesses from wordle-valid, wordle-answers, scrabble")
   flagAnswerDict := flag.String("answer-dictionary", "wordle-answers", "Select answers from wordle-valid, wordle-answers, scrabble")
+  flagWordLength := flag.Int("word-length", 5, "Select the length of the answer word")
   flag.Parse()
 
   mode := *flagMode
   answer := *flagAnswer
   guessDict := *flagGuessDict
   answerDict := *flagAnswerDict
+  wordLength := *flagWordLength
 
   fmt.Println("  Mode: " + mode)
 
   // Load dictionary
-  validWordList := readWordList("dictionaries/" + guessDict + ".txt", 5)
+  if wordLength != 5 {
+    if guessDict != "kids" && answerDict != "kids" {
+      guessDict = "scrabble"
+      answerDict = "scrabble"
+    }
+  }
+  validWordList := readWordList("dictionaries/" + guessDict + ".txt", wordLength)
   remainingWords := validWordList
   fmt.Println("  Loaded " + strconv.Itoa(len(remainingWords)) + " words from dictionary")
 
   // Pick a random word
-  possibleAnswers := readWordList("dictionaries/" + answerDict + ".txt", 5)
+  possibleAnswers := readWordList("dictionaries/" + answerDict + ".txt", wordLength)
   rand.Seed(time.Now().Unix())
 
   if mode == "demo" {
@@ -48,20 +57,14 @@ func main() {
     fmt.Println("  Selected word: " + answer)
   } else if mode == "play" {
     answer = possibleAnswers[rand.Intn(len(possibleAnswers))]
-    fmt.Println("  Selected word: *****")
+    repl := regexp.MustCompile(`\w`)
+    fmt.Println("  Selected word: " + repl.ReplaceAllString(answer,"*"))
   } else if mode == "solve" {
     fmt.Println("  SOLVE feature not yet available.")
     os.Exit(0)
   } else {
     fmt.Println("  Invalid mode: " + mode )
     os.Exit(1)
-  }
-
-  if (mode == "demo" && answer == "") || mode == "play" {
-    answer = possibleAnswers[rand.Intn(len(possibleAnswers))]
-  }
-  if mode != "play" {
-    fmt.Println("  Chose answer: " + answer)
   }
 
   // Variables
@@ -75,12 +78,12 @@ func main() {
     fmt.Println("Guess " + strconv.Itoa(i+1))
     fmt.Println("--------------------------------------------------------------------------------")
     // Calculate Word Scores
-    fmt.Println("  Words Left: " + strconv.Itoa(len(remainingWords)))
-    wordScores = scoreAllWords(remainingWords)
+    fmt.Println("  Words Left:  " + strconv.Itoa(len(remainingWords)))
+    wordScores = scoreAllWords(remainingWords, wordLength)
 
     if mode == "play" || mode == "solve" {
       // Get user guess
-      nextGuess = getUserGuess()
+      nextGuess = getUserGuess(wordLength)
 
       // Show guess score
       for _, v := range wordScores {
@@ -93,15 +96,15 @@ func main() {
       // Get Best Word
       // implement sort, this is inefficient
       nextGuess = getBestWord(wordScores)
-      fmt.Println("  Best Guess: " + nextGuess)
+      fmt.Println("  Best Guess:  " + nextGuess)
     }
 
     if mode == "solve" {
 
     } else {
       // Make Guess, Get Result
-      result = getGuessResult(nextGuess, answer)
-      fmt.Println("  Result:     " + result)
+      result = getGuessResult(nextGuess, answer, wordLength)
+      fmt.Println("  Result:      " + result)
       // Exit Loop if Correct
       if result == nextGuess {
         break
@@ -109,15 +112,16 @@ func main() {
     }
 
     // Filter remainingWords based on new result information
-    remainingWords = filterRemainingWords(result, nextGuess, remainingWords)
+    remainingWords = filterRemainingWords(result, nextGuess, remainingWords, wordLength)
   }
 
   fmt.Println("--------------------------------------------------------------------------------")
   fmt.Println("Finished")
   fmt.Println("--------------------------------------------------------------------------------")
   if result == nextGuess {
-    fmt.Println("  Result:     CORRECT!")
+    fmt.Println("  Result:      CORRECT!")
   } else {
-    fmt.Println("  Result:     I LOST!")
+    fmt.Println("  Result:      LOST!")
+    fmt.Println("  Answer:      " + answer)
   }
 }
