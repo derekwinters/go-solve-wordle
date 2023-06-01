@@ -22,6 +22,7 @@ func main() {
   fmt.Println("--------------------------------------------------------------------------------")
   flagMode := flag.String("mode", "demo", "Select the mode: demo, play, solve")
   flagAnswer := flag.String("answer", "", "Select a specific answer for demo mode")
+  flagDictionary := flag.String("dictionary", "", "Select this dictionary for both guesses and answers")
   flagGuessDict := flag.String("guess-dictionary", "wordle-valid", "Select guesses from wordle-valid, wordle-answers, scrabble")
   flagAnswerDict := flag.String("answer-dictionary", "wordle-answers", "Select answers from wordle-valid, wordle-answers, scrabble")
   flagWordLength := flag.Int("word-length", 5, "Select the length of the answer word")
@@ -29,9 +30,20 @@ func main() {
 
   mode := *flagMode
   answer := *flagAnswer
+  dictionary := *flagDictionary
   guessDict := *flagGuessDict
   answerDict := *flagAnswerDict
   wordLength := *flagWordLength
+
+  if dictionary != "" {
+    guessDict = dictionary
+    answerDict = dictionary
+  }
+
+    if mode != "demo" && mode != "play" {
+      fmt.Println("  Invalid mode: " + mode )
+      os.Exit(1)
+    }
 
   fmt.Println("  Mode: " + mode)
 
@@ -50,21 +62,22 @@ func main() {
   possibleAnswers := readWordList("dictionaries/" + answerDict + ".txt", wordLength)
   rand.Seed(time.Now().Unix())
 
-  if mode == "demo" {
-    if  answer == "" {
+  switch mode {
+    case "demo":
+      if answer == "" {
+        answer = possibleAnswers[rand.Intn(len(possibleAnswers))]
+      }
+      fmt.Println("  Selected word: " + answer)
+    case "play":
       answer = possibleAnswers[rand.Intn(len(possibleAnswers))]
-    }
-    fmt.Println("  Selected word: " + answer)
-  } else if mode == "play" {
-    answer = possibleAnswers[rand.Intn(len(possibleAnswers))]
-    repl := regexp.MustCompile(`\w`)
-    fmt.Println("  Selected word: " + repl.ReplaceAllString(answer,"*"))
-  } else if mode == "solve" {
-    fmt.Println("  SOLVE feature not yet available.")
-    os.Exit(0)
-  } else {
-    fmt.Println("  Invalid mode: " + mode )
-    os.Exit(1)
+      repl := regexp.MustCompile(`\w`)
+      fmt.Println("  Selected word: " + repl.ReplaceAllString(answer,"*"))
+    case "solve":
+      fmt.Println("  SOLVE feature not yet available.")
+      os.Exit(0)
+    default:
+      fmt.Println("  Invalid mode: " + mode )
+      os.Exit(1)
   }
 
   // Variables

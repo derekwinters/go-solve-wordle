@@ -3,6 +3,7 @@ package main
 import (
   "bufio"
   "fmt"
+  "log"
   "os"
   "strings"
 )
@@ -25,6 +26,10 @@ func readWordList(path string, length int) []string {
   }
 
   readFile.Close()
+
+  if len(fileLines) == 0 {
+    log.Fatal("ERROR: No words found in dictionary file: " + path)
+  }
 
   return fileLines
 }
